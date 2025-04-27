@@ -17,7 +17,7 @@ pipeline {
             steps { 
                 // Xây dựng Docker image từ Dockerfile 
                 script { 
-                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}") 
+                    dockerImage = docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}") 
                 } 
             } 
         } 
