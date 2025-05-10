@@ -1,31 +1,33 @@
 pipeline {
-    agent { label 'Jenkins-Agent' }
-
-    stages {
-        stage("Cleanup Workspace") {
-            steps {
-                cleanWs()
-            }
-        }
-
-        stage("Checkout from SCM") {
-            steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/Daomynhi/mynhi-nginx'
-            }
-        }
-
-        stage('Build Docker Image') {
-      steps {
-        script {
-          dockerImage = docker.build("mynhi-nginx-image")
-        }
+  agent { label ' Jenkins-Agent ' }
+  tools {
+    jdk ' Java17 '
+    maven ' Maven3 '
+  }
+  stages{
+      stage( "Cleanup Workspace" ){
+              steps {
+              cleanWs()
+              }
       }
-    }
 
-    stage('Run Docker Container') {
-      steps {
-        sh "docker run -d -p 8080:80 --name mynhi-nginx mynhi-nginx-image || true"
+      stage( "Checkout from SCM" ){
+              steps {
+              git branch: 'main' , credentialsId: 'github'  , url: 'https://github.com/Daomynhi/mynhi-nginx'
+              }
       }
-    }
+
+      stage( "Build Application" ){
+              steps {
+                  sh "mvn clean package"
+              }
+
+      }
+
+      stage( "Test Application" ){
+              steps {
+                  sh "mvn test"
+              }
+      }
   }
 }
